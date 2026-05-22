@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Walego · Product 1 Materials · Slack channel invitation email</title>
+<style>
+  :root{
+    --blue:#0A66C2; --blue-soft:#EAF3FB; --blue-bg:#F5F8FC;
+    --dark:#0F1F33; --muted:#5B6B7E; --line:#E4EAF1;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:#F5F8FC; color:var(--dark);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif;
+    line-height:1.55;
+  }
+  .topbar{height:6px; background:var(--blue);}
+  .wrap{max-width:760px; margin:0 auto; padding:32px 28px 80px;}
+  .back{font-size:12px; color:var(--blue); text-decoration:none; font-weight:600;}
+  .back:hover{text-decoration:underline;}
+  .brand{font-size:11px; letter-spacing:2px; font-weight:700; color:var(--blue); margin-top:18px;}
+  h1{font-size:28px; margin:6px 0 4px; color:var(--dark);}
+  .sub{color:var(--muted); font-size:14px; margin:0 0 22px;}
+  h2{font-size:13px; letter-spacing:1.5px; text-transform:uppercase; color:var(--blue);
+     margin:24px 0 8px;}
+  .card{
+    background:#fff; border:1px solid var(--line); border-radius:10px;
+    padding:22px 24px; margin-bottom:14px;
+    box-shadow:0 2px 8px rgba(15,31,51,0.03);
+  }
+  .label{
+    font-size:9.5px; letter-spacing:1.5px; font-weight:700; color:var(--blue);
+    text-transform:uppercase; margin-bottom:6px;
+  }
+  .subject{font-size:17px; font-weight:700; color:var(--dark); margin:0;}
+  .body{font-size:14.5px; line-height:1.65; color:var(--dark);}
+  .body b{color:var(--dark);}
+  .body i{color:var(--muted);}
+  .button{
+    display:inline-block; background:var(--blue); color:#fff!important;
+    padding:11px 22px; border-radius:8px; text-decoration:none;
+    font-weight:700; font-size:14.5px; margin:10px 0;
+  }
+  .note{
+    background:var(--blue-soft); border-left:3px solid var(--blue);
+    padding:10px 14px; border-radius:6px; font-size:13px; margin-top:12px;
+  }
+  .meta{font-size:12px; color:var(--muted);}
+  ul{margin:8px 0 8px 18px; padding:0;}
+  ul li{margin-bottom:4px; font-size:14px;}
+  hr{border:none; border-top:1px solid var(--line); margin:18px 0;}
+  .var{
+    display:inline-block; background:#FFF7E6; color:#7A5400;
+    padding:1px 6px; border-radius:4px; font-weight:600;
+    font-family:Menlo,Monaco,Consolas,monospace; font-size:12.5px;
+  }
+  @media print{
+    body{background:#fff;}
+    .topbar{display:none;}
+    .back{display:none;}
+  }
+</style>
+</head>
+<body>
+<div class="topbar"></div>
+<div class="wrap">
+  <a class="back" href="index.html">‹ Back to execution plan</a>
+  <div class="brand">WALEGO · PRODUCT 1 · MATERIALS</div>
+  <h1>Slack channel invitation email</h1>
+  <p class="sub">Brevo template, sent from Johann's address to existing Walego clients to invite them into their field-specific <code>#wins-{field}</code> channel. One template, dynamic channel name + link.</p>
+
+  <h2>Email 1 · Initial invite</h2>
+  <div class="card">
+    <div class="label">Subject (pick one)</div>
+    <p class="subject">Welcome to <span class="var">#wins-{field}</span> — your Walego community channel</p>
+    <p class="subject" style="margin-top:6px;"><span class="var">{first_name}</span>, see what other Walego <span class="var">{field}</span>s are landing</p>
+    <hr/>
+    <div class="label">From</div>
+    <p class="meta" style="margin:0 0 14px;">Johann · johann@walego.co · (sent via Brevo)</p>
+
+    <div class="label">Body</div>
+    <div class="body">
+      <p>Hey <span class="var">{first_name}</span>,</p>
+      <p>Johann here.</p>
+      <p>Quick one. We just opened a Slack channel for Walego clients in your field: <b><span class="var">#wins-{field}</span></b>. It's a small community where the people using Walego the way you do (<span class="var">{field}</span>) share what's actually working.</p>
+
+      <p><b>Two things go in there:</b></p>
+      <ul>
+        <li>Quick wins — <i>"booked first meeting in 4 hours!"</i></li>
+        <li>Campaign screenshots + one line on how Walego helped</li>
+      </ul>
+
+      <p>That's it. Two-line posts, no pressure. I'm in there too and react to every post.</p>
+
+      <p>You get three things back:</p>
+      <ul>
+        <li>See what's working for peers in your exact field (real numbers, real campaigns)</li>
+        <li>Get tagged when we feature your wins on walego.co and LinkedIn</li>
+        <li>Direct line to me when you have something to share or ask</li>
+      </ul>
+
+      <p style="margin-bottom:6px;"><b>Join in 1 click:</b></p>
+      <a class="button" href="#">Join #wins-<span class="var">{field}</span></a>
+
+      <p>See you in there.</p>
+      <p>— Johann<br/>
+        <span class="meta">Co-founder, Walego · walego.co</span></p>
+    </div>
+
+    <div class="note">
+      <b>Brevo variables:</b> <span class="var">{first_name}</span>, <span class="var">{field}</span> (one of: consultancy / sales / agency / …), <span class="var">{slack_invite_link}</span> for the button URL.
+    </div>
+  </div>
+
+  <h2>Email 2 · Follow-up (D+4 if no join)</h2>
+  <div class="card">
+    <div class="label">Subject</div>
+    <p class="subject"><span class="var">{first_name}</span>, did the #wins-<span class="var">{field}</span> invite land?</p>
+    <hr/>
+    <div class="label">Body</div>
+    <div class="body">
+      <p>Hey <span class="var">{first_name}</span>,</p>
+      <p>Quick bump in case my last email got buried. We just opened a Slack channel for our Walego <span class="var">{field}</span> clients — short wins, real campaigns, founders only.</p>
+      <p>One click in and you're in:</p>
+      <a class="button" href="#">Join #wins-<span class="var">{field}</span></a>
+      <p>— Johann</p>
+    </div>
+  </div>
+
+  <h2>Email 3 · Final nudge (D+8)</h2>
+  <div class="card">
+    <div class="label">Subject</div>
+    <p class="subject">Last one — #wins-<span class="var">{field}</span> is filling up</p>
+    <hr/>
+    <div class="label">Body</div>
+    <div class="body">
+      <p>Hey <span class="var">{first_name}</span>,</p>
+      <p>Last nudge on this. The #wins-<span class="var">{field}</span> channel is up and active. If you want in, here's the link. If not, no worries — I won't bug you again about it.</p>
+      <a class="button" href="#">Join the channel</a>
+      <p>— Johann</p>
+    </div>
+  </div>
+
+  <h2>Why this email works</h2>
+  <div class="card">
+    <ul>
+      <li><b>Personal sender</b> (Johann's address) lifts open rates vs marketing@</li>
+      <li><b>Field-specific framing</b> — they see their own segment in the channel name</li>
+      <li><b>Light ask</b> — two-line posts, not a 30-min interview</li>
+      <li><b>Triple benefit</b> — peer insight + amplification + founder line</li>
+      <li><b>One CTA</b> — the join button, nothing else competing for the click</li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>

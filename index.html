@@ -1,0 +1,796 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Walego · Social Proof System · Execution Plan</title>
+<style>
+  :root{
+    --blue:#0A66C2;
+    --blue-soft:#EAF3FB;
+    --blue-bg:#F5F8FC;
+    --dark:#0F1F33;
+    --muted:#5B6B7E;
+    --line:#E4EAF1;
+    --warm:#E8552B;
+    --warm-soft:#FCEFE9;
+    --gold:#B97A00;
+    --gold-soft:#FFF6E1;
+    --green:#1B8A5A;
+    --p1:var(--blue);
+    --p2:var(--warm);
+    --p3:var(--gold);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:#fff;color:var(--dark);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;}
+  body{overflow:hidden;}
+
+  .deck{position:relative;width:100vw;height:100vh;overflow:hidden;}
+  .slide{
+    position:absolute; inset:0;
+    padding:4.5vh 5vw 8vh; display:flex; flex-direction:column;
+    opacity:0; pointer-events:none; transition:opacity .35s ease;
+    background:#fff;
+  }
+  .slide.active{opacity:1; pointer-events:auto;}
+
+  .topbar{position:absolute; top:0; left:0; right:0; height:6px; background:var(--accent,var(--blue));}
+  .slide.s1{--accent:var(--p1);}
+  .slide.s2{--accent:var(--p2);}
+  .slide.s3{--accent:var(--p3);}
+
+  /* header */
+  .header{display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;}
+  .brand{font-size:11px; letter-spacing:2px; font-weight:700; color:var(--accent);}
+  .meta{font-size:11.5px; color:var(--muted); text-align:right;}
+  .meta b{color:var(--dark);}
+
+  /* hero block per product */
+  .hero{
+    display:grid; grid-template-columns:auto 1fr; gap:22px;
+    align-items:center; margin-bottom:18px;
+  }
+  .cadence{
+    background:var(--accent); color:#fff; border-radius:14px;
+    padding:14px 22px; min-width:200px;
+    display:flex; flex-direction:column; align-items:flex-start; gap:2px;
+  }
+  .cadence .pno{font-size:11px; letter-spacing:2px; font-weight:700; opacity:.85;}
+  .cadence .freq{font-size:30px; font-weight:800; line-height:1;}
+  .cadence .freq small{font-size:13px; font-weight:600; opacity:.85;}
+  .cadence .tier{font-size:10px; letter-spacing:1.5px; font-weight:700; opacity:.85; margin-top:6px;}
+
+  .hero-text h1{font-size:30px; line-height:1.15; margin:0 0 4px; font-weight:800;}
+  .hero-text .tag{font-size:14px; color:var(--muted); font-style:italic; margin:0;}
+
+  /* description line */
+  .what{
+    background:var(--bg-soft,var(--blue-soft));
+    border-left:4px solid var(--accent);
+    padding:12px 16px; border-radius:8px;
+    font-size:14px; line-height:1.5; color:var(--dark);
+    margin-bottom:16px;
+  }
+  .slide.s1 .what{background:var(--blue-soft);}
+  .slide.s2 .what{background:var(--warm-soft);}
+  .slide.s3 .what{background:var(--gold-soft);}
+
+  /* execution grid */
+  .exec{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:14px; flex:1;
+  }
+  .card{
+    background:#fff; border:1.5px solid var(--line); border-radius:10px;
+    padding:14px 16px; display:flex; flex-direction:column;
+    border-top:3px solid var(--accent);
+  }
+  .card .label{
+    font-size:10px; letter-spacing:1.5px; font-weight:700;
+    color:var(--accent); text-transform:uppercase; margin-bottom:8px;
+  }
+  .card h4{margin:0 0 8px; font-size:14px; font-weight:700;}
+  .card ul{margin:0; padding-left:16px; font-size:12.5px; line-height:1.5;}
+  .card ul li{margin-bottom:3px;}
+  .card p{margin:0; font-size:12.5px; line-height:1.5; color:var(--dark);}
+
+  /* timeline mini */
+  .timeline{display:flex; flex-direction:column; gap:7px; margin-top:2px;}
+  .tl{display:flex; align-items:flex-start; gap:9px; font-size:12.5px;}
+  .tl .day{
+    background:var(--accent); color:#fff; font-weight:700; font-size:10px;
+    padding:3px 10px; border-radius:11px; text-align:center;
+    letter-spacing:0.5px; line-height:1.5;
+    white-space:nowrap; flex-shrink:0; align-self:flex-start;
+    margin-top:1px;
+  }
+  .tl .what-step{color:var(--dark); line-height:1.4; flex:1; min-width:0;}
+  .tl .who{color:var(--muted); font-style:italic; font-size:11.5px; white-space:nowrap;}
+
+  /* channel chips */
+  .channels{display:flex; flex-wrap:wrap; gap:6px;}
+  .chip{
+    background:var(--blue-bg); border:1px solid var(--line);
+    color:var(--dark); font-size:11.5px; font-weight:600;
+    padding:4px 9px; border-radius:14px;
+  }
+  .slide.s1 .chip{background:var(--blue-soft);}
+  .slide.s2 .chip{background:var(--warm-soft);}
+  .slide.s3 .chip{background:var(--gold-soft);}
+  .chan-group{margin-top:10px;}
+  .chan-group:first-of-type{margin-top:4px;}
+  .chan-label{
+    font-size:9.5px; letter-spacing:1.2px; font-weight:700;
+    color:var(--accent); text-transform:uppercase; margin-bottom:5px;
+  }
+
+  /* journey map — visual flow at bottom of each slide */
+  .journey-wrap{
+    margin-top:auto; padding-top:14px;
+    border-top:1px dashed var(--line);
+  }
+  .journey-label{
+    font-size:10px; letter-spacing:1.8px; font-weight:800;
+    color:var(--accent); text-transform:uppercase;
+    margin-bottom:8px;
+  }
+  .journey{
+    display:flex; align-items:stretch; gap:0;
+  }
+  .j-step{
+    flex:1;
+    display:flex; flex-direction:column; gap:5px;
+    background:var(--blue-bg);
+    padding:10px 12px;
+    border-radius:6px;
+    font-size:12px; color:var(--dark); line-height:1.3;
+    border-top:3px solid var(--accent);
+  }
+  .slide.s1 .j-step{background:var(--blue-soft);}
+  .slide.s2 .j-step{background:var(--warm-soft);}
+  .slide.s3 .j-step{background:var(--gold-soft);}
+  .j-step .jn{
+    background:var(--accent); color:#fff;
+    font-size:11px; font-weight:800;
+    width:22px; height:22px; border-radius:50%;
+    display:inline-flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .j-step .jt{font-weight:700; line-height:1.3; color:var(--dark);}
+  .j-arrow{
+    color:var(--accent); padding:0 6px;
+    font-weight:800; font-size:18px;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  /* footer strip — progression across all 3 products */
+  .progression{
+    margin-top:14px; padding-top:12px; border-top:1px solid var(--line);
+    display:flex; align-items:center; gap:8px; font-size:11.5px; color:var(--muted);
+  }
+
+  /* Materials button — bottom-right of each slide */
+  .materials-dropdown{
+    position:absolute;
+    bottom:8px; right:5vw;
+    z-index:20;
+  }
+  .materials-btn{
+    background:var(--accent); color:#fff; border:none;
+    padding:10px 20px; border-radius:24px;
+    font-weight:800; font-size:13px; letter-spacing:0.5px;
+    cursor:pointer;
+    display:inline-flex; align-items:center; gap:8px;
+    box-shadow:0 3px 10px rgba(15,31,51,0.15);
+    font-family:inherit;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .materials-btn:hover{
+    transform:translateY(-1px);
+    box-shadow:0 5px 14px rgba(15,31,51,0.18);
+  }
+  .materials-btn .caret{font-size:10px; line-height:1;}
+  .materials-menu{
+    display:none;
+    position:absolute; bottom:100%; right:0;
+    margin-bottom:10px;
+    background:#fff; border:1px solid var(--line);
+    border-radius:12px;
+    box-shadow:0 8px 24px rgba(15,31,51,0.15);
+    min-width:280px;
+    overflow:hidden;
+  }
+  .materials-menu.open{display:block;}
+  .materials-menu a{
+    display:flex; align-items:center; gap:12px;
+    padding:13px 18px;
+    color:var(--dark); text-decoration:none;
+    font-size:13.5px; font-weight:600;
+    border-bottom:1px solid var(--line);
+  }
+  .materials-menu a:last-child{border-bottom:none;}
+  .materials-menu a:hover{background:#F5F8FC;}
+  .materials-menu .m-pno{
+    color:#fff; font-size:10.5px; font-weight:800;
+    padding:4px 9px; border-radius:12px;
+    letter-spacing:0.5px; min-width:30px; text-align:center;
+  }
+  .materials-menu .m-pno.p1{background:var(--p1);}
+  .materials-menu .m-pno.p2{background:var(--p2);}
+  .materials-menu .m-pno.p3{background:var(--p3);}
+  .materials-menu .m-label{font-weight:600;}
+  .materials-menu .m-sub{font-size:11px; color:var(--muted); font-weight:500; display:block;}
+  .prog-pill{
+    padding:5px 12px; border-radius:14px; font-size:11px; font-weight:700;
+    letter-spacing:0.5px; background:#fff; border:1.5px solid var(--line); color:var(--muted);
+  }
+  .prog-pill.active{
+    background:var(--accent); color:#fff; border-color:var(--accent);
+  }
+  .prog-arrow{color:var(--line); font-weight:700;}
+
+  /* nav */
+  .nav{
+    position:fixed; bottom:18px; left:50%; transform:translateX(-50%);
+    display:flex; align-items:center; gap:14px; z-index:10;
+    background:#fff; border:1px solid var(--line); border-radius:30px;
+    padding:6px 12px; box-shadow:0 4px 14px rgba(15,31,51,0.06);
+  }
+  .nav button{
+    background:none; border:none; cursor:pointer; padding:6px 8px;
+    color:var(--muted); font-size:13px; font-weight:600;
+  }
+  .nav button:hover{color:var(--p1);}
+  .dots{display:flex; gap:6px;}
+  .dot{width:8px; height:8px; border-radius:50%; background:var(--line); cursor:pointer;}
+  .dot.active{background:var(--p1);}
+  .counter{font-size:12px; color:var(--muted); font-weight:600;}
+
+  /* print */
+  @media print{
+    @page{size:A4 landscape; margin:0;}
+    html,body{overflow:visible; background:#fff;}
+    body{height:auto;}
+    .deck{height:auto; overflow:visible;}
+    .slide{
+      position:relative; inset:auto;
+      opacity:1!important; pointer-events:auto!important;
+      page-break-after:always; height:100vh;
+      padding:4.5vh 5vw 8vh;
+    }
+    .slide:last-child{page-break-after:auto;}
+    .nav{display:none;}
+  }
+
+  @media (max-width:1050px){
+    .exec{grid-template-columns:repeat(2,1fr);}
+  }
+  @media (max-width:700px){
+    .exec{grid-template-columns:1fr;}
+    .hero{grid-template-columns:1fr;}
+    h1{font-size:24px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="deck" id="deck">
+
+  <!-- =================== SLIDE 1 — PRODUCT 1 =================== -->
+  <section class="slide active s1" id="slide1">
+    <div class="topbar"></div>
+
+    <div class="header">
+      <div class="brand">WALEGO  ·  SOCIAL PROOF SYSTEM  ·  EXECUTION PLAN</div>
+      <div class="meta">Slide <b>1 / 3</b><br/>Product 1 · Daily, per field</div>
+    </div>
+
+    <div class="hero">
+      <div class="cadence">
+        <span class="pno">PRODUCT 1</span>
+        <span class="freq">1 <small>per day / field</small></span>
+        <span class="tier">TIER  ·  VOLUME + RETENTION</span>
+      </div>
+      <div class="hero-text">
+        <h1>Field-Specific Win Channels</h1>
+        <p class="tag">One Slack channel per client field. Clients share their wins. Walego amplifies them daily.</p>
+      </div>
+    </div>
+
+    <div class="what">
+      <b>What it is.</b> One Slack channel per client field. Clients post their own wins inside (a quick message or a campaign screenshot). <b>Marketing publishes 1 win per channel, per day,</b> to the website and LinkedIn. <b>Proof for prospects + retention for clients.</b>
+    </div>
+
+    <div class="exec">
+
+      <div class="card">
+        <div class="label">How it works</div>
+        <h4>One channel per field</h4>
+        <ul>
+          <li>One channel per client field on <b>Slack + WhatsApp</b>:
+            <br/><span style="display:inline-block; margin-top:3px;">
+              <span class="chip" style="font-size:10.5px; margin:2px 3px 0 0;">#wins-consultancy</span>
+              <span class="chip" style="font-size:10.5px; margin:2px 3px 0 0;">#wins-sales</span>
+              <span class="chip" style="font-size:10.5px; margin:2px 3px 0 0;">#wins-agency</span>
+              <span class="chip" style="font-size:10.5px; margin:2px 3px 0 0; opacity:.7;">+ more later</span>
+            </span>
+          </li>
+          <li><b>Acquisition:</b> already in our Slack/WhatsApp → <b>direct invite</b>. Not yet in → <b>Brevo email from Johann</b> inviting them to join their field's channel.</li>
+          <li>Two sources of proof: clients post their own wins (text or campaign screenshot) + Marketing pulls screenshots from <b>Walego app analytics</b></li>
+          <li><b>Johann welcomes every new client, explains the channel idea, asks for best-campaign screenshots + results</b></li>
+          <li><b>Goal: 1 published win per day, per channel</b></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="label">Timeline</div>
+        <h4>Same-day morning ritual</h4>
+        <div class="timeline">
+          <div class="tl"><span class="day">D 0 AM</span><span class="what-step">Open every #wins-{field} channel, pick 1 win from each <span class="who">· Marketing</span></span></div>
+          <div class="tl"><span class="day">D 0 PM</span><span class="what-step">Design the post per field <span class="who">· Marketing</span></span></div>
+          <div class="tl"><span class="day">D 0 PM</span><span class="what-step">Publish to website + LinkedIn, tagged by field <span class="who">· Marketing</span></span></div>
+          <div class="tl"><span class="day">DONE</span><span class="what-step">1 win published per field + saved to our library <span class="who">· ✓</span></span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="label">Where it goes</div>
+        <h4>High-frequency, field-tagged distribution</h4>
+
+        <div class="chan-group">
+          <div class="chan-label">1 · Website</div>
+          <div class="channels">
+            <span class="chip">Live wins ticker on walego.co</span>
+            <span class="chip">Proof blocks on /use-cases/{field}</span>
+            <span class="chip">Hover for details · animated reframing</span>
+          </div>
+        </div>
+
+        <div class="chan-group">
+          <div class="chan-label">2 · Social media (LinkedIn)</div>
+          <div class="channels">
+            <span class="chip">LinkedIn micro-posts, field-tagged</span>
+          </div>
+        </div>
+
+        <div class="chan-group">
+          <div class="chan-label">3 · Other channels</div>
+          <div class="channels">
+            <span class="chip">Sales decks &amp; cold outreach</span>
+            <span class="chip">Brevo newsletter</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="label">Ownership</div>
+        <h4>Clients post, marketing publishes</h4>
+        <ul>
+          <li><b>Clients:</b> post wins in their field's channel</li>
+          <li><b>Johann:</b> welcomes clients, explains the channel idea, asks for best-campaign screenshots + results</li>
+          <li><b>Marketing:</b> runs the channels, collects shared screenshots, publishes 1 win/day per field</li>
+        </ul>
+        <p style="margin-top:8px; font-size:11.5px; color:var(--muted);"><i>Daily proof + client retention. The channels become a community moat.</i></p>
+      </div>
+
+    </div>
+
+    <div class="journey-wrap">
+      <div class="journey-label">Customer journey map</div>
+      <div class="journey">
+        <div class="j-step"><span class="jn">1</span><span class="jt">Client posts win in their field channel</span></div>
+        <span class="j-arrow">›</span>
+        <div class="j-step"><span class="jn">2</span><span class="jt">Marketing reviews all channels (morning)</span></div>
+        <span class="j-arrow">›</span>
+        <div class="j-step"><span class="jn">3</span><span class="jt">Design the post from template</span></div>
+        <span class="j-arrow">›</span>
+        <div class="j-step"><span class="jn">4</span><span class="jt">Publish to website + LinkedIn</span></div>
+        <span class="j-arrow">›</span>
+        <div class="j-step"><span class="jn">5</span><span class="jt">Win is published + saved to library</span></div>
+      </div>
+    </div>
+
+    <div class="progression">
+      <span class="prog-pill active">P1 · Daily</span>
+      <span class="prog-arrow">→</span>
+      <span class="prog-pill">P2 · Weekly</span>
+      <span class="prog-arrow">→</span>
+      <span class="prog-pill">P3 · Monthly</span>
+      <span style="margin-left:12px;">From volume to authority: the credibility stack.</span>
+    </div>
+
+    <!-- Materials button — bottom-left -->
+    <div class="materials-dropdown">
+      <button class="materials-btn" type="button" onclick="toggleMaterials(event)">
+        Materials <span class="caret">▾</span>
+      </button>
+      <div class="materials-menu">
+        <a href="walego_product1_email.html" target="_blank" rel="noopener">
+          <span class="m-pno p1">P1</span>
+          <span>
+            <span class="m-label">Slack channel invitation email</span>
+            <span class="m-sub">Brevo template · sent as Johann</span>
+          </span>
+        </a>
+        <a href="walego_product2_questions.html" target="_blank" rel="noopener">
+          <span class="m-pno p2">P2</span>
+          <span>
+            <span class="m-label">Selfie video question set</span>
+            <span class="m-sub">12 questions · 1–2 min total</span>
+          </span>
+        </a>
+        <a href="walego_product3_script.html" target="_blank" rel="noopener">
+          <span class="m-pno p3">P3</span>
+          <span>
+            <span class="m-label">GTM session conversation script</span>
+            <span class="m-sub">3 parts · client story · partnership · method</span>
+          </span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== SLIDE 2 — PRODUCT 2 =================== -->
+  <section class="slide s2" id="slide2">
+    <div class="topbar"></div>
+
+    <div class="header">
+      <div class="brand">WALEGO  ·  SOCIAL PROOF SYSTEM  ·  EXECUTION PLAN</div>
+      <div class="meta">Slide <b>2 / 3</b><br/>Product 2 · Weekly</div>
+    </div>
+
+    <div class="hero">
+      <div class="cadence" style="background:var(--p2);">
+        <span class="pno">PRODUCT 2</span>
+        <span class="freq">2 <small>clients / week</small></span>
+        <span class="tier">TIER  ·  HUMAN &amp; EMOTIONAL</span>
+      </div>
+      <div class="hero-text">
+        <h1>Selfie Transformation Videos</h1>
+        <p class="tag">Successful clients, alone on camera, telling their story in their own words.</p>
+      </div>
+    </div>
+
+    <div class="what">
+      <b>What it is.</b> Each week, <b>2 existing clients</b> film a 1–2 min selfie video on their phone, answering our questions. <b>Marketing edits each one</b> (subtitles, hooks, branding, thumbnails) into a polished testimonial.
+    </div>
+
+    <div class="exec">
+
+      <div class="card">
+        <div class="label">How we reach clients</div>
+        <h4>Brevo email, sent as Johann</h4>
+        <ul>
+          <li>Audience: <b>existing Walego clients</b> only. Priority: clients already active in P1 #wins channels</li>
+          <li><b>Friday:</b> Marketing sends Johann next week's brief + nominees list</li>
+          <li>Johann picks 2 clients per week</li>
+          <li>Brevo sends the brief as Johann + a sample selfie video from our team (so clients see what's expected)</li>
+          <li>Auto follow-ups at D+4 and D+8 if no submission</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="label">Timeline</div>
+        <h4>Weekly cycle, starting Friday</h4>
+        <div class="timeline">
+          <div class="tl"><span class="day">FRI</span><span class="what-step">Marketing sends brief + nominees to Johann <span class="who">· Marketing</span></span></div>
+          <div class="tl"><span class="day">D 0</span><span class="what-step">Johann picks 2 clients <span class="who">· Johann</span></span></div>
+          <div class="tl"><span class="day">D 1</span><span class="what-step">Brevo sends invite (as Johann) + brief + sample video <span class="who">· Marketing</span></span></div>
+          <div class="tl"><span class="day">D 2–6</span><span class="what-step">Client films &amp; uploads. Brevo nudges at D+4 / D+8 <span class="who">· Client / Brevo</span></span></div>
+          <div class="tl"><span class="day">D 7–9</span><span class="what-step">Editing, subtitles, hooks, thumbnail <span class="who">· Marketing</span></span></div>
+          <div class="tl"><span class="day">D 10</span><span class="what-step">Approve → publish <span class="who">· Marketing</span></span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="label">Where it goes</div>
+        <h4>Multi-channel distribution</h4>
+
+        <div class="chan-group">
+          <div class="chan-label">1 · Website</div>
+          <div class="channels">
+            <span class="chip">Homepage hero</span>
+            <span class="chip">Use-case pages</span>
+          </div>
+        </div>
+
+        <div class="chan-group">
+          <div class="chan-label">2 · Social media</div>
+          <div class="channels">
+            <span class="chip">LinkedIn video</span>
+            <span class="chip">Instagram reels</span>
+            <span class="chip">TikTok</span>
+            <span class="chip">YouTube Shorts</span>
+          </div>
+        </div>
+
+        <div class="chan-group">
+          <div class="chan-label">3 · Other channels</div>
+          <div class="channels">
+            <span class="chip">Sales collateral</span>
+            <span class="chip">Short clips for paid ads</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="label">Ownership</div>
+        <h4>Production fully on marketing</h4>
+        <ul>
+          <li><b>Johann:</b> pick 2 clients per week</li>
+          <li><b>Marketing:</b> brief, follow-ups, editing, publishing</li>
+          <li><b>Client:</b> 1–2 min of filming on their phone</li>
+        </ul>
+        <p style="margin-top:8px; font-size:11.5px; color:var(--muted);"><i>Human trust + emotional credibility.</i></p>
+      </div>
+
+    </div>
+
+    <div class="journey-wrap">
+      <div class="journey-label">Customer journey map</div>
+      <div class="journey">
+        <div class="j-step"><span class="jn">1</span><span class="jt">Friday: brief + nominees sent to Johann</span></div>
+        <span class="j-arrow">›</span>
+        <div class="j-step"><span class="jn">2</span><span class="jt">Johann picks 2 clients</span></div>
+        <span class="j-arrow">›</span>
+        <div class="j-step"><span class="jn">3</span><span class="jt">Brevo sends brief + sample video</span></div>
+        <span class="j-arrow">›</span>
+        <div class="j-step"><span class="jn">4</span><span class="jt">Client films + Marketing edits</span></div>
+        <span class="j-arrow">›</span>
+        <div class="j-step"><span class="jn">5</span><span class="jt">Publish across all channels</span></div>
+      </div>
+    </div>
+
+    <div class="progression">
+      <span class="prog-pill">P1 · Daily</span>
+      <span class="prog-arrow">→</span>
+      <span class="prog-pill active">P2 · Weekly</span>
+      <span class="prog-arrow">→</span>
+      <span class="prog-pill">P3 · Monthly</span>
+      <span style="margin-left:12px;">The midpoint: proof becomes human and emotional.</span>
+    </div>
+
+    <!-- Materials button — bottom-left -->
+    <div class="materials-dropdown">
+      <button class="materials-btn" type="button" onclick="toggleMaterials(event)">
+        Materials <span class="caret">▾</span>
+      </button>
+      <div class="materials-menu">
+        <a href="walego_product1_email.html" target="_blank" rel="noopener">
+          <span class="m-pno p1">P1</span>
+          <span>
+            <span class="m-label">Slack channel invitation email</span>
+            <span class="m-sub">Brevo template · sent as Johann</span>
+          </span>
+        </a>
+        <a href="walego_product2_questions.html" target="_blank" rel="noopener">
+          <span class="m-pno p2">P2</span>
+          <span>
+            <span class="m-label">Selfie video question set</span>
+            <span class="m-sub">12 questions · 1–2 min total</span>
+          </span>
+        </a>
+        <a href="walego_product3_script.html" target="_blank" rel="noopener">
+          <span class="m-pno p3">P3</span>
+          <span>
+            <span class="m-label">GTM session conversation script</span>
+            <span class="m-sub">3 parts · client story · partnership · method</span>
+          </span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== SLIDE 3 — PRODUCT 3 =================== -->
+  <section class="slide s3" id="slide3">
+    <div class="topbar"></div>
+
+    <div class="header">
+      <div class="brand">WALEGO  ·  SOCIAL PROOF SYSTEM  ·  EXECUTION PLAN</div>
+      <div class="meta">Slide <b>3 / 3</b><br/>Product 3 · Monthly</div>
+    </div>
+
+    <div class="hero">
+      <div class="cadence" style="background:var(--p3);">
+        <span class="pno">PRODUCT 3</span>
+        <span class="freq">1 <small>per month</small></span>
+        <span class="tier">TIER  ·  AUTHORITY &amp; ELITE</span>
+      </div>
+      <div class="hero-text">
+        <h1>Premium GTM Sessions</h1>
+        <p class="tag">Johann + flagship client, <b>online</b>. Strategic conversation, not a testimonial.</p>
+      </div>
+    </div>
+
+    <div class="what">
+      <b>What it is.</b> Once a month, Johann sits down online with a flagship client for a 15–30 min strategic conversation. Three parts: <b>client story → Walego partnership → Johann explains the method.</b> Positions Walego as expertise + methodology, not software. <b>Phase 1 launch: June 2026</b> (preparation in May).
+    </div>
+
+    <div class="exec">
+
+      <div class="card">
+        <div class="label">How to reach clients</div>
+        <h4>Personal invitation, flagship only</h4>
+        <ul>
+          <li>Johann hand-picks 1 flagship client / month (Elite, agencies, strong ROI)</li>
+          <li>Direct personal invite from Johann</li>
+          <li>100% online on Google Meet (recorded on Riverside)</li>
+          <li><b>Marketing writes the full script &amp; question set</b> for both sides</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="label">Timeline</div>
+        <h4>2–3 week production cycle</h4>
+        <div class="timeline">
+          <div class="tl"><span class="day">W 1</span><span class="what-step">Johann invites client <span class="who">· Johann</span></span></div>
+          <div class="tl"><span class="day">W 1</span><span class="what-step">Script + scheduling + tech setup <span class="who">· Marketing</span></span></div>
+          <div class="tl"><span class="day">W 2</span><span class="what-step">15–30 min online recording <span class="who">· Johann + Client</span></span></div>
+          <div class="tl"><span class="day">W 2–3</span><span class="what-step">Edit + publish across flagship channels <span class="who">· Marketing</span></span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="label">Where it goes</div>
+        <h4>Flagship authority placement</h4>
+
+        <div class="chan-group">
+          <div class="chan-label">1 · Website</div>
+          <div class="channels">
+            <span class="chip">Homepage authority section</span>
+            <span class="chip">Blog article / case study</span>
+          </div>
+        </div>
+
+        <div class="chan-group">
+          <div class="chan-label">2 · Social media</div>
+          <div class="channels">
+            <span class="chip">YouTube full video</span>
+            <span class="chip">LinkedIn long-form posts</span>
+            <span class="chip">Podcast snippets</span>
+            <span class="chip">Short clips for paid ads</span>
+          </div>
+        </div>
+
+        <div class="chan-group">
+          <div class="chan-label">3 · Other channels</div>
+          <div class="channels">
+            <span class="chip">Elite sales collateral</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="label">Ownership</div>
+        <h4>Johann + Marketing co-production</h4>
+        <ul>
+          <li><b>Johann:</b> invite client, run conversation, explain the method (Part 3)</li>
+          <li><b>Marketing:</b> write the script, schedule, record, edit, publish</li>
+          <li><b>Client:</b> show up &amp; share the story</li>
+        </ul>
+        <p style="margin-top:8px; font-size:11.5px; color:var(--muted);"><i>Premium authority + Elite positioning.</i></p>
+      </div>
+
+    </div>
+
+    <div class="journey-wrap">
+      <div class="journey-label">Customer journey map</div>
+      <div class="journey">
+        <div class="j-step"><span class="jn">1</span><span class="jt">Johann invites flagship client</span></div>
+        <span class="j-arrow">›</span>
+        <div class="j-step"><span class="jn">2</span><span class="jt">Marketing writes 3-part script</span></div>
+        <span class="j-arrow">›</span>
+        <div class="j-step"><span class="jn">3</span><span class="jt">Record online (Meet + Riverside)</span></div>
+        <span class="j-arrow">›</span>
+        <div class="j-step"><span class="jn">4</span><span class="jt">Edit + clip + write case study</span></div>
+        <span class="j-arrow">›</span>
+        <div class="j-step"><span class="jn">5</span><span class="jt">Publish: homepage · YouTube · LinkedIn</span></div>
+      </div>
+    </div>
+
+    <div class="progression">
+      <span class="prog-pill">P1 · Daily</span>
+      <span class="prog-arrow">→</span>
+      <span class="prog-pill">P2 · Weekly</span>
+      <span class="prog-arrow">→</span>
+      <span class="prog-pill active">P3 · Monthly</span>
+      <span style="margin-left:12px;">The flagship: what makes Walego the methodology, not just the software.</span>
+    </div>
+
+    <!-- Materials button — bottom-left, contains all 3 product materials -->
+    <div class="materials-dropdown">
+      <button class="materials-btn" type="button" onclick="toggleMaterials(event)">
+        Materials <span class="caret">▾</span>
+      </button>
+      <div class="materials-menu">
+        <a href="walego_product1_email.html" target="_blank" rel="noopener">
+          <span class="m-pno p1">P1</span>
+          <span>
+            <span class="m-label">Slack channel invitation email</span>
+            <span class="m-sub">Brevo template · sent as Johann</span>
+          </span>
+        </a>
+        <a href="walego_product2_questions.html" target="_blank" rel="noopener">
+          <span class="m-pno p2">P2</span>
+          <span>
+            <span class="m-label">Selfie video question set</span>
+            <span class="m-sub">12 questions · 1–2 min total</span>
+          </span>
+        </a>
+        <a href="walego_product3_script.html" target="_blank" rel="noopener">
+          <span class="m-pno p3">P3</span>
+          <span>
+            <span class="m-label">GTM session conversation script</span>
+            <span class="m-sub">3 parts · client story · partnership · method</span>
+          </span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- nav -->
+<div class="nav">
+  <button id="prev" aria-label="Previous">‹ Prev</button>
+  <div class="dots" id="dots"></div>
+  <span class="counter" id="counter">1 / 3</span>
+  <button id="next" aria-label="Next">Next ›</button>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const dotsEl = document.getElementById('dots');
+  const counter = document.getElementById('counter');
+  let idx = 0;
+
+  slides.forEach((_, i) => {
+    const d = document.createElement('span');
+    d.className = 'dot' + (i===0?' active':'');
+    d.addEventListener('click', () => go(i));
+    dotsEl.appendChild(d);
+  });
+  const dots = Array.from(dotsEl.children);
+
+  function go(n){
+    idx = Math.max(0, Math.min(slides.length-1, n));
+    slides.forEach((s,i)=> s.classList.toggle('active', i===idx));
+    dots.forEach((d,i)=> d.classList.toggle('active', i===idx));
+    counter.textContent = (idx+1) + ' / ' + slides.length;
+  }
+  document.getElementById('prev').onclick = () => go(idx-1);
+  document.getElementById('next').onclick = () => go(idx+1);
+  document.addEventListener('keydown', e => {
+    if(e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') go(idx+1);
+    if(e.key === 'ArrowLeft'  || e.key === 'PageUp') go(idx-1);
+    if(e.key === 'Home') go(0);
+    if(e.key === 'End') go(slides.length-1);
+    if(e.key === 'Escape'){
+      const m = document.getElementById('materials-menu');
+      if(m) m.classList.remove('open');
+    }
+  });
+
+  // Materials dropdowns (one per slide)
+  function toggleMaterials(e){
+    e.stopPropagation();
+    const btn = e.currentTarget;
+    const menu = btn.nextElementSibling;
+    // close any other open menus first
+    document.querySelectorAll('.materials-menu.open').forEach(m => {
+      if(m !== menu) m.classList.remove('open');
+    });
+    if(menu) menu.classList.toggle('open');
+  }
+  document.addEventListener('click', e => {
+    document.querySelectorAll('.materials-dropdown').forEach(d => {
+      if(d.contains(e.target)) return;
+      const menu = d.querySelector('.materials-menu');
+      if(menu) menu.classList.remove('open');
+    });
+  });
+</script>
+
+</body>
+</html>
