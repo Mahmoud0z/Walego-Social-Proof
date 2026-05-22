@@ -224,10 +224,15 @@
   .prog-pill{
     padding:5px 12px; border-radius:14px; font-size:11px; font-weight:700;
     letter-spacing:0.5px; background:#fff; border:1.5px solid var(--line); color:var(--muted);
+    cursor:pointer; transition:border-color .15s ease, color .15s ease, background .15s ease;
+    user-select:none;
   }
+  .prog-pill:hover{border-color:var(--accent); color:var(--accent);}
   .prog-pill.active{
     background:var(--accent); color:#fff; border-color:var(--accent);
+    cursor:default;
   }
+  .prog-pill.active:hover{background:var(--accent); color:#fff;}
   .prog-arrow{color:var(--line); font-weight:700;}
 
   /* nav */
@@ -392,11 +397,11 @@
     </div>
 
     <div class="progression">
-      <span class="prog-pill active">P1 · Daily</span>
+      <span class="prog-pill active" onclick="go(0)" role="button" tabindex="0">P1 · Daily</span>
       <span class="prog-arrow">→</span>
-      <span class="prog-pill">P2 · Weekly</span>
+      <span class="prog-pill" onclick="go(1)" role="button" tabindex="0">P2 · Weekly</span>
       <span class="prog-arrow">→</span>
-      <span class="prog-pill">P3 · Monthly</span>
+      <span class="prog-pill" onclick="go(2)" role="button" tabindex="0">P3 · Monthly</span>
       <span style="margin-left:12px;">From volume to authority: the credibility stack.</span>
     </div>
 
@@ -543,11 +548,11 @@
     </div>
 
     <div class="progression">
-      <span class="prog-pill">P1 · Daily</span>
+      <span class="prog-pill" onclick="go(0)" role="button" tabindex="0">P1 · Daily</span>
       <span class="prog-arrow">→</span>
-      <span class="prog-pill active">P2 · Weekly</span>
+      <span class="prog-pill active" onclick="go(1)" role="button" tabindex="0">P2 · Weekly</span>
       <span class="prog-arrow">→</span>
-      <span class="prog-pill">P3 · Monthly</span>
+      <span class="prog-pill" onclick="go(2)" role="button" tabindex="0">P3 · Monthly</span>
       <span style="margin-left:12px;">The midpoint: proof becomes human and emotional.</span>
     </div>
 
@@ -690,11 +695,11 @@
     </div>
 
     <div class="progression">
-      <span class="prog-pill">P1 · Daily</span>
+      <span class="prog-pill" onclick="go(0)" role="button" tabindex="0">P1 · Daily</span>
       <span class="prog-arrow">→</span>
-      <span class="prog-pill">P2 · Weekly</span>
+      <span class="prog-pill" onclick="go(1)" role="button" tabindex="0">P2 · Weekly</span>
       <span class="prog-arrow">→</span>
-      <span class="prog-pill active">P3 · Monthly</span>
+      <span class="prog-pill active" onclick="go(2)" role="button" tabindex="0">P3 · Monthly</span>
       <span style="margin-left:12px;">The flagship: what makes Walego the methodology, not just the software.</span>
     </div>
 
@@ -770,6 +775,13 @@
       const m = document.getElementById('materials-menu');
       if(m) m.classList.remove('open');
     }
+  });
+
+  // Keyboard support for progression pills (Enter/Space to click)
+  document.querySelectorAll('.prog-pill').forEach(p => {
+    p.addEventListener('keydown', e => {
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); p.click(); }
+    });
   });
 
   // Materials dropdowns (one per slide)
